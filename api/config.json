@@ -1,0 +1,10 @@
+{
+  "databaseUrl": "mongodb://127.0.0.1:27017",
+  "databaseName": "schedule",
+  "secret": "schedule-api-token-key",
+  "refreshTokenSecret": "2024_schedule_api_refresh_token_key",
+  "tokenType": "Bearer",
+  "port": 3200,
+  "tokenLife": 3600,
+  "refreshTokenLife": 86400
+}
