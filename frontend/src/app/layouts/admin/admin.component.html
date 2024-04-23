@@ -1,0 +1,9 @@
+<app-topbar [userData]="userData" (toggleBar)="toggleSideBar($event)" />
+
+<app-sidebar [userData]="userData" *ngIf="showSidebar" />
+
+<div class="content-wrap" [ngClass]="{'show-sidebar' : !showSidebar }">
+  <router-outlet />
+
+  <app-footer />
+</div>

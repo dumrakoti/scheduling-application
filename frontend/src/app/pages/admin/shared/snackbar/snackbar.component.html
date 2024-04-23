@@ -1,0 +1,35 @@
+@if (dialogData && dialogData.message && dialogData.type === 'default') {
+<div class="toaster toaster-default d-flex align-items-center justify-content-start ">
+  <!-- <div class="toaster-icon toaster-icon-default">
+    <span class="material-symbols-outlined"> check_circle </span>
+  </div> -->
+  <p class="text-default mb-0">{{dialogData?.message}}</p>
+</div>
+}
+
+@if (dialogData && dialogData.message && dialogData.type === 'success') {
+<div class="toaster toaster-success d-flex align-items-center justify-content-start ">
+  <!-- <div class="toaster-icon toaster-icon-success">
+    <span class="material-symbols-outlined"> check_circle </span>
+  </div> -->
+  <p class="text-success mb-0">{{dialogData?.message}}</p>
+</div>
+}
+
+@if (dialogData && dialogData.message && dialogData.type === 'danger') {
+<div class="toaster toaster-danger d-flex align-items-center justify-content-start ">
+  <!-- <div class="toaster-icon toaster-icon-danger">
+    <span class="material-symbols-outlined">error</span>
+  </div> -->
+  <p class="text-danger mb-0">{{dialogData?.message}}</p>
+</div>
+}
+
+@if (dialogData && dialogData.message && dialogData.type === 'warning') {
+<div class="toaster toaster-warning d-flex align-items-center justify-content-start ">
+  <div class="toaster-icon toaster-icon-warning">
+    <span class="material-symbols-outlined">warning</span>
+  </div>
+  <p class="text-warning mb-0">{{dialogData?.message}}</p>
+</div>
+}
