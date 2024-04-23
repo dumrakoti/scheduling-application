@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from 'src/app/core/model/User';
 
 @Component({
@@ -9,6 +9,15 @@ import { User } from 'src/app/core/model/User';
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent {
+
+
   @Input() userData: User | any;
-  
+  @Output() toggleBar = new EventEmitter();
+
+
+
+  toggleSidebar() {
+    this.toggleBar.emit(true);
+  }
+
 }

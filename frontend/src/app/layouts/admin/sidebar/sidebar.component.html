@@ -1,1 +1,29 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+  <div class="sidebar-list">
+    <ul class="navbar-nav iq-main-menu my-3" id="sidebar-menu">
+      <li class="nav-item">
+        <a class="nav-link pointer " routerLinkActive="active" routerLink="/dashboard">
+          <i class="icon material-symbols-outlined">
+            dashboard
+          </i>
+          <span class="item-name">Dashboard</span>
+        </a>
+      </li>
+
+
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <ul class="navbar-nav iq-main-menu my-3" id="sidebar-menu">
+      <li class="nav-item">
+        <a class="nav-link pointer " (click)="logout()">
+          <span class="material-symbols-outlined">
+            logout
+          </span>
+          <span class="item-name">Logout</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>

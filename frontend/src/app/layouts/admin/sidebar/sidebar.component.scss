@@ -1,0 +1,15 @@
+.sidebar {
+  display: block;
+  position: fixed;
+  width: 100%;
+  max-width: 250px;
+  top: 70px;
+  bottom: 0;
+  transition: var(--sidebar-transition);
+  transition-duration: var(--sidebar-transition-duration);
+  transition-timing-function: var(--sidebar-transition-function-ease);
+  z-index: 910;
+  background-color: #fff;
+  color: var(--bs-primary);
+  box-shadow: 0 0 30px rgba(var(--bs-primary-rgb), 0.05);
+}
