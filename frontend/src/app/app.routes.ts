@@ -12,13 +12,13 @@ export const appRoutes: Routes = [
     path: 'auth',
     component: AuthComponent,
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-    // canActivate: [RedirectGuard]
+    canActivate: [RedirectGuard]
   },
   {
     path: '',
     component: AdminComponent,
     loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: 'page-not-found', pathMatch: 'full' }
 ];
