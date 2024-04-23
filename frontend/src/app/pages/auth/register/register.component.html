@@ -1,1 +1,67 @@
-<p>register works!</p>
+<div class="d-lg-flex half">
+  <div class="bg order-1 order-md-2"></div>
+
+  <div class="contents order-2 order-md-1">
+    <div class="container">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-md-7">
+          <h3>Register to <strong>SchedulingApp</strong></h3>
+          <p class="mb-4">Lorem ipsum dolor sit amet elit. Sapiente sit aut eos consectetur adipisicing.</p>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
+            <div class="form-group first mb-3">
+              <label for="name">Your name</label>
+              <input type="text" class="form-control" placeholder="your name" id="name" formControlName="name">
+
+              <div *ngIf="isSubmitting && f.name.errors" class="invalid-feedback">
+                <div *ngIf="f.name.errors.required">Name is required</div>
+              </div>
+            </div>
+
+            <div class="form-group first mb-3">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" placeholder="your-email@gmail.com" id="email"
+                formControlName="email" [ngClass]="{ 'is-invalid': isSubmitting && f.email.errors }">
+
+              <div *ngIf="isSubmitting && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required">Email is required</div>
+                <div *ngIf="f.email.errors.email">Email must be a valid email address
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group last mb-3">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" placeholder="Your Password" id="password"
+                formControlName="password" [ngClass]="{ 'is-invalid': isSubmitting && f.password.errors }">
+
+              <div *ngIf="isSubmitting && f.password.errors" class="invalid-feedback">
+                <span *ngIf="f.password.errors.required">Password is required</span>
+              </div>
+            </div>
+
+            <div class="d-flex mb-5 justify-content-between align-items-center">
+              <label class="control control--checkbox mb-0"><span class="caption">Remember me</span>
+                <input type="checkbox" />
+                <div class="control__indicator"></div>
+              </label>
+              <span class="ml-auto"><a href="#" class="forgot-pass">Forgot Password</a></span>
+            </div>
+
+            <button type="submit"
+              class="btn btn-block d-flex justify-content-center align-items-center h-auto btn-primary"
+              [disabled]="submitted">
+              <span>Register</span>
+
+              <div class="spinner-border text-light spinner-border-sm ms-2" role="status" *ngIf="submitted">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </button>
+          </form>
+
+          <div class="mt-5">Already have account <a routerLink="/auth/login">login here</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

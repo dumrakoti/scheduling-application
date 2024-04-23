@@ -106,28 +106,5 @@ export class AuthService {
     });
   }
 
-  updateToken(token: any) {
-    localStorage.setItem('auth_token', token);
-  }
-
-  getGreetingText() {
-    const myDate = new Date();
-    const hrs = myDate.getHours();
-    const mins = myDate.getMinutes();
-    if (hrs >= 3 && ((hrs === 5 && mins >= 30) || (hrs > 5 && hrs < 12))) {
-      return 'Good Morning';
-    } else if (hrs >= 12 && hrs < 18) {
-      return 'Good Afternoon';
-    } else if (hrs >= 18 && hrs < 24) {
-      return 'Good Evening';
-    } else {
-      return 'Hello';
-    }
-  }
-
-  convertTimezoneDate(date: any, timeZone: any): any {
-    const timezone = timeZone ? timeZone : 'UTC';
-    return moment.tz(date * 1000, timezone);
-  }
 
 }

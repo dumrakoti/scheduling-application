@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { Component, Input, inject } from '@angular/core';
 import { User } from 'src/app/core/model/User';
@@ -7,7 +7,7 @@ import { User } from 'src/app/core/model/User';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })

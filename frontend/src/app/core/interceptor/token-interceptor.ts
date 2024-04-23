@@ -25,7 +25,7 @@ export class TokenInterceptor implements HttpInterceptor {
         if (event instanceof HttpResponse) {
           const authorizationHeader = event.headers.get('Authorization');
           if (authorizationHeader) {
-            this.authService.updateToken(authorizationHeader);
+            console.log('authorization header', authorizationHeader);
           }
         }
       }),

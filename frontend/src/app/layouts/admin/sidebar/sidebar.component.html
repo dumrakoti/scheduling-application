@@ -1,27 +1,34 @@
 <aside class="sidebar">
   <div class="sidebar-list">
     <ul class="navbar-nav iq-main-menu my-3" id="sidebar-menu">
-      <li class="nav-item">
-        <a class="nav-link pointer " routerLinkActive="active" routerLink="/dashboard">
-          <i class="icon material-symbols-outlined">
+      <li class="nav-item mb-1">
+        <a class="nav-link pointer d-flex justify-content-start align-items-center" routerLinkActive="active" routerLink="/dashboard">
+          <i class="material-symbols-outlined font-22">
             dashboard
           </i>
-          <span class="item-name">Dashboard</span>
+          <span class="item-name ms-2">Dashboard</span>
         </a>
       </li>
 
-
+      <li class="nav-item mb-1">
+        <a class="nav-link pointer d-flex justify-content-start align-items-center" routerLinkActive="active" routerLink="/event">
+          <span class="material-symbols-outlined font-22">
+            event_available
+          </span>
+          <span class="item-name ms-2">Event</span>
+        </a>
+      </li>
     </ul>
   </div>
 
   <div class="sidebar-footer">
     <ul class="navbar-nav iq-main-menu my-3" id="sidebar-menu">
       <li class="nav-item">
-        <a class="nav-link pointer " (click)="logout()">
-          <span class="material-symbols-outlined">
+        <a class="nav-link pointer d-flex justify-content-start align-items-center" (click)="logout()">
+          <span class="material-symbols-outlined font-22">
             logout
           </span>
-          <span class="item-name">Logout</span>
+          <span class="item-name ms-2">Logout</span>
         </a>
       </li>
     </ul>

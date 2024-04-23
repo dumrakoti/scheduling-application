@@ -10,13 +10,15 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class SchedulingService {
-  api_url: any;
+  apiUrl: any;
+  holidayUrl: any;
 
   constructor(
     public http: HttpClient,
     private authSerivce: AuthService
   ) {
-    this.api_url = environment.apiUrl;
+    this.apiUrl = environment.apiUrl;
+    this.holidayUrl = environment.holidayUrl;
   }
 
   getResponseOptions(method: string): any {
@@ -27,8 +29,16 @@ export class SchedulingService {
     return { headers, method };
   }
 
+  getCountries(): Observable<any> {
+    return this.http.get(`${this.holidayUrl}/countries?pretty&key=${environment.holidayApiKey}`, this.getResponseOptions('get'));
+  }
+
+  getHolidays(country: any, year: any): Observable<any> {
+    return this.http.get(`${this.holidayUrl}/holidays?pretty&key=${environment.holidayApiKey}&country=${country}&year=${year}`, this.getResponseOptions('get'));
+  }
+
   getEvents(): Observable<any> {
-    return this.http.get(`${this.api_url}/events`, this.getResponseOptions('get'));
+    return this.http.get(`${this.apiUrl}/events`, this.getResponseOptions('get'));
   }
 
 
