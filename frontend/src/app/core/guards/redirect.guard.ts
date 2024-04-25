@@ -20,7 +20,6 @@ export class RedirectGuard implements CanActivate {
     state: RouterStateSnapshot
   ): any {
     if (this.authService.isLoggedIn()) {
-      const userRole = this.authService.getRole();
       this.router.navigate(['/dashboard']);
       return false;
     }

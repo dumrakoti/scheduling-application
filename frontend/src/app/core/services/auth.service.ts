@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
+import { tap } from 'rxjs/operators';
 import 'moment-timezone';
 
 import { environment } from 'src/environments/environment';
@@ -10,7 +11,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  api_url: any;
+  apiUrl: any;
   authResponse: any;
 
   loginSubscription: Subscription | any;
@@ -20,7 +21,7 @@ export class AuthService {
   constructor(
     public http: HttpClient
   ) {
-    this.api_url = environment.apiUrl;
+    this.apiUrl = `${environment.apiUrl}/auth`;
   }
 
   isLoggedIn(): boolean {
@@ -28,19 +29,23 @@ export class AuthService {
   }
 
   getAccessToken(): any {
-    return localStorage.getItem('auth_token') ? localStorage.getItem('auth_token') : '';
+    return localStorage.getItem('access_token') ? localStorage.getItem('access_token') : '';
   }
 
   getRefreshToken(): any {
     return localStorage.getItem('refresh_token') ? localStorage.getItem('refresh_token') : '';
   }
 
-  getTokenType(): any {
-    return localStorage.getItem('token_type') ? localStorage.getItem('token_type') : '';
-  }
-
-  getRole(): any {
-    return localStorage.getItem('role') ? JSON.parse(localStorage.getItem('role')!) : undefined;
+  getEmail(): any {
+    if (localStorage.getItem('user_data')) {
+      try {
+        const ud = JSON.parse(localStorage.getItem('user_data')!);
+        return ud.email;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
   }
 
   getUserData(): any {
@@ -55,10 +60,7 @@ export class AuthService {
   }
 
   getResponseHeader(): any {
-    const headers = new HttpHeaders({
-      Authorization: this.getAccessToken() ? this.getAccessToken() : '',
-      'Content-Type': 'application/json'
-    });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return headers;
   }
 
@@ -69,26 +71,26 @@ export class AuthService {
 
   setUserData(userData: any): void {
     localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('role', JSON.stringify(userData.user_role));
-    localStorage.setItem('user_data', JSON.stringify(userData));
+    localStorage.setItem('refresh_token', userData.refresh_token);
+    localStorage.setItem('user_data', JSON.stringify({ name: userData.name, id: userData.id, email: userData.email }));
   }
 
   setAuthorizationData(auth_data: any): void {
-    localStorage.setItem('auth_token', 'Bearer ' + auth_data.auth_token);
+    localStorage.setItem('access_token', 'Bearer ' + auth_data.access_token);
   }
 
-  register(r_data: any): Observable<any> {
+  register(userData: any): Observable<any> {
     const options = { headers: this.getResponseHeader(), method: 'post' };
-    return this.http.post(`${this.api_url}/users/register`, r_data, options);
+    return this.http.post(`${this.apiUrl}/register`, userData, options);
   }
 
   login(loginCredentials: any): void {
     const options = { headers: this.getResponseHeader(), method: 'post' };
-    this.loginSubscription = this.http.post(`${this.api_url}/merchants/login`, loginCredentials, options).subscribe({
+    this.loginSubscription = this.http.post(`${this.apiUrl}/login`, loginCredentials, options).subscribe({
       next: (response: any) => {
-        if (response && response.data) {
+        if (response && response.userData) {
           try {
-            this.authResponse = response.data;
+            this.authResponse = response.userData;
             this.setUserInfo(this.authResponse);
           } catch (e) {
             this.authError.next(this);
@@ -104,6 +106,20 @@ export class AuthService {
         this.loginSubscription.unsubscribe();
       }
     });
+  }
+
+  updateToken(): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options = { headers, method: 'post' };
+
+    return this.http.post<any>(`${this.apiUrl}/token`, { email: this.getEmail() }, options)
+      .pipe(tap((tokens) => {
+        this.storeTokens(tokens.data);
+      }));
+  }
+
+  storeTokens(res: any): void {
+    localStorage.setItem('access_token', 'Bearer ' + res.token);
   }
 
 

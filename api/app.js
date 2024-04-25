@@ -1,11 +1,22 @@
 const express = require('express');
-const app = express();
+var path = require('path');
 const morgan = require('morgan');
 const bodyPaser = require('body-parser');
 const mongoose = require('mongoose');
+var createError = require('http-errors');
+// var cookieParser = require('cookie-parser');
 const config = require('./config');
 
-// const userRoutes = require('./api/routes/users');
+const indexRoutes = require('./routes/index');
+const userRoutes = require('./routes/users');
+const utilsRoutes = require('./routes/utils');
+const eventRoutes = require('./routes/event');
+
+const app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 mongoose.connect(
   `${config.databaseUrl}/${config.databaseName}`,
@@ -16,9 +27,12 @@ mongoose.connection.once('open', _ => { console.log('Database connected') });
 mongoose.connection.on('error', err => { console.error('connection error:', err) });
 
 app.use(morgan('dev'));
-app.use('/uploads', express.static('uploads'));
-app.use(bodyPaser.urlencoded({ extended: false }));
-app.use(bodyPaser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+// app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+// app.use(bodyPaser.urlencoded({ extended: false }));
+// app.use(bodyPaser.json());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -34,12 +48,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use('/auth', userRoutes);
+app.use('/', indexRoutes);
+app.use('/auth', userRoutes);
+app.use('/utils', utilsRoutes);
+app.use('/event', eventRoutes);
 
 app.use((req, res, next) => {
-  const error = new Error('Not found');
-  error.status = 404;
-  next(error);
+  next(createError(404));
 });
 
 app.use((error, req, res, next) => {

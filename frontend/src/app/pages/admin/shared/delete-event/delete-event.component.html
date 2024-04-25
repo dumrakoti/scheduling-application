@@ -1,0 +1,18 @@
+<div role="document" class="modal-dialog w-100">
+  <div class="modal-content p-3">
+    <div class="modal-header justify-content-between ">
+      <h5 class="modal-title"></h5>
+      <button type="button" (click)="closeDialog()" class="pointer btn-close"></button>
+    </div>
+
+    <div class="modal-body text-center">
+      <h5 class="mb-5">are you sure you want to delete event ?</h5>
+
+      <div class="pt-4 d-flex justify-content-center align-items-center ">
+        <button class="btn btn-secondary w-50 me-2" type="button">No</button>
+        <button class="btn btn-danger w-50" type="button" (click)="deleteEvent()">Yes</button>
+      </div>
+
+    </div>
+  </div>
+</div>

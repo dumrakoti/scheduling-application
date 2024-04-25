@@ -1,1 +1,72 @@
-<p>event works!</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Events</h6>
+
+        <nav
+          style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);"
+          aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" routerLink="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Event</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12">
+      <div class="card mb-3 border-0 shadow-sm">
+        <div class="card-header">
+          <div class="mb-0 row">
+            <label for="timezone" class="col-2 pr-0 col-form-label">Timezone</label>
+            <div class="col-4">
+              <ng-select class="" appendTo="body" name="timezone" id="timezone" placeholder="Choose timezone"
+                [multiple]="false" (change)="onChangeTimezone($event)" [searchable]="true"
+                [(ngModel)]="defaultTimezone">
+                <ng-container *ngIf="timezonesData && timezonesData.length > 0">
+                  <ng-option [value]="t.tzCode" *ngFor="let t of timezonesData;">
+                    {{ t.name }}
+                  </ng-option>
+                </ng-container>
+              </ng-select>
+            </div>
+            <div class="col-2"></div>
+
+            <label for="country" class="col-1 col-form-label">Country</label>
+            <div class="col-3">
+              <ng-select class="" appendTo="body" name="country" id="country" placeholder="Choose country"
+                [multiple]="false" (change)="onChangeCountry($event)" [searchable]="true" [(ngModel)]="defaultCountry">
+                <ng-container *ngIf="countryData && countryData.length > 0">
+                  <ng-option [value]="c.code" *ngFor="let c of countryData;">
+                    {{ c.name }}
+                  </ng-option>
+                </ng-container>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="row ">
+            <div class="col-12">
+              <div class="d-flex justify-content-around align-items-center " style="height: 40vh;" *ngIf="!calendarVisible">
+                <div class="spinner-border text-warning spinner-border-lg" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+
+              <full-calendar *ngIf='calendarVisible' [options]='calendarOptions'>
+                <ng-template #eventContent let-arg>
+                  <b>{{ arg.timeText }}</b>
+                  <i>{{ arg.event.title }}</i>
+                </ng-template>
+              </full-calendar>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

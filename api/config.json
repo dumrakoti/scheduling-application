@@ -6,5 +6,6 @@
   "tokenType": "Bearer",
   "port": 3200,
   "tokenLife": 3600,
-  "refreshTokenLife": 86400
+  "refreshTokenLife": 86400,
+  "holidayApiKey": "1b5cc377-f4f7-4f0c-8296-02905e2279a9"
 }

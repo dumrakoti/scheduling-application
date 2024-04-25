@@ -1,1 +1,62 @@
-<p>create-event works!</p>
+<div role="document" class="modal-dialog w-100">
+  <div class="modal-content p-3">
+    <div class="modal-header justify-content-between ">
+      <h5 class="modal-title">Scheduling Event</h5>
+      <button type="button" (click)="closeDialog()" class="pointer btn-close"></button>
+    </div>
+
+    <div class="modal-body pt-3">
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="mb-3">
+          <label for="title" class="form-label">Event title</label>
+          <input type="text" class="form-control" id="title" placeholder="Event title" formControlName="title"
+            [ngClass]="{ 'is-invalid': isSubmitting && f.title.errors }">
+
+          <div *ngIf="isSubmitting && f.title.errors" class="invalid-feedback">
+            <span *ngIf="f.title.errors.required">Title is required</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="start-date" class="form-label">Start date</label>
+          <input type="date" class="form-control" id="start-date" placeholder="Start date" formControlName="start"
+            [ngClass]="{ 'is-invalid': isSubmitting && f.start.errors }" />
+
+          <div *ngIf="isSubmitting && f.start.errors" class="invalid-feedback">
+            <span *ngIf="f.start.errors.required">Start date is required</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="end-date" class="form-label">End date</label>
+          <input type="date" class="form-control" id="end-date" placeholder="End date" formControlName="end" />
+        </div>
+
+        <div class="mb-3">
+          <label for="end-date" class="form-label">End date</label>
+          <input type="time" class="form-control" id="end-date" placeholder="End date" formControlName="end" />
+        </div>
+
+        <div class="mb-3">
+          <label for="participants" class="form-label">Event participants</label>
+          <input type="text" class="form-control" id="participants" placeholder="Event participants" formControlName="participants">
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Event description</label>
+          <textarea rows="5" class="form-control" id="description" placeholder="Write description" formControlName="description">
+            </textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="submitted">
+          <span>Submit</span>
+
+          <div class="spinner-border text-light spinner-border-sm ms-2" role="status" *ngIf="submitted">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>

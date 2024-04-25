@@ -65,8 +65,8 @@ export class LoginComponent implements OnInit {
   authError(error: any): any {
     this.submitted = false;
     this.isSubmitting = false;
-    if (error && error.error && error.error.message) {
-      this.error = error && error.error && error.error.message ? error.error.message : 'Incorrect email address or password.';
+    if (error && error.error && error.error.error) {
+      this.error = error.error.error ? error.error.error : 'Incorrect email address or password.';
     } else {
       this.error = 'Invalid email address or password.';
     }
