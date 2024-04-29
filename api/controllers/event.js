@@ -68,15 +68,11 @@ exports.update_event = (req, res, next) => {
     participants: req.body.participants,
     updated_at: new Date()
   };
-  Event.update({ _id }, { $set: updateOps })
+  Event.updateOne({ _id }, { $set: updateOps })
     .select('title _id start end description participants create_at updated_at')
     .exec()
     .then(result => {
-      res.status(200).json({
-        status: 200,
-        message: 'Event updated.',
-        data: result
-      });
+      res.status(200).json({ status: 200, message: 'Event updated.', data: result });
     })
     .catch(error => {
       res.status(500).json({ status: 500, error: error || 'Internal Server Error' });

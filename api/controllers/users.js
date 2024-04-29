@@ -156,3 +156,20 @@ exports.user_get = (req, res, next) => {
       res.status(500).json({ status: 500, error: error || 'Internal Server Error' });
     });
 }
+
+exports.user_patch = (req, res, next) => {
+  const _id = req.params.userId;
+  const updateOps = {
+    name: req.body.title,
+    updated_at: new Date()
+  };
+  User.updateOne({ _id }, { $set: updateOps })
+    .select('name _id email create_at updated_at')
+    .exec()
+    .then(result => {
+      res.status(200).json({ status: 200, message: 'User updated.', data: result });
+    })
+    .catch(error => {
+      res.status(500).json({ status: 500, error: error || 'Internal Server Error' });
+    });
+}

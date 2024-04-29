@@ -1,16 +1,40 @@
 <div role="document" class="modal-dialog w-100">
   <div class="modal-content p-3">
     <div class="modal-header justify-content-between ">
-      <h5 class="modal-title"></h5>
+      <h5 class="modal-title">View Event</h5>
       <button type="button" (click)="closeDialog()" class="pointer btn-close"></button>
     </div>
 
-    <div class="modal-body text-center">
-      <h5 class="mb-5">are you sure you want to delete event ?</h5>
+    <div class="modal-body">
+      <table class="table table-bordered mt-3">
+        <tbody>
+          <tr>
+            <th class="col text-left">Title</th>
+            <td>{{ this.data?.eventObj?.title }}</td>
+          </tr>
+          <tr>
+            <th class="col text-left">Start</th>
+            <td>{{ this.data?.eventObj?.start }}</td>
+          </tr>
+          <tr>
+            <th class="col text-left">End</th>
+            <td>{{ this.data?.eventObj?.end }}</td>
+          </tr>
+          <tr>
+            <th class="col text-left">Participants</th>
+            <td>{{ this.data?.eventObj?.participants }}</td>
+          </tr>
+          <tr>
+            <th class="col text-left">Description</th>
+            <td>{{ this.data?.eventObj?.description }}</td>
+          </tr>
+        </tbody>
+      </table>
 
-      <div class="pt-4 d-flex justify-content-center align-items-center ">
-        <button class="btn btn-secondary w-50 me-2" type="button">No</button>
-        <button class="btn btn-danger w-50" type="button" (click)="deleteEvent()">Yes</button>
+      <div class="pt-2 d-flex justify-content-center align-items-center flex-row">
+        <button class="btn btn-danger w-50" type="button" (click)="deleteEvent()">Delete this event</button>
+        <button class="btn btn-warning text-white w-50 mx-3" type="button" (click)="updateEvent()">Update this event</button>
+        <button class="btn btn-secondary w-50" type="button" (click)="closeDialog()">Close</button>
       </div>
 
     </div>

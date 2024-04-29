@@ -24,11 +24,14 @@ export class CreateEventComponent implements OnInit {
   submitted: boolean = false;
   error: string = '';
 
+  isUpdate: boolean = false;
+
   constructor(
     public dialogRef: MatDialogRef<CreateEventComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     console.log(data);
+    console.log(data.selectInfo?.startStr);
   }
 
   ngOnInit(): void {
@@ -40,6 +43,23 @@ export class CreateEventComponent implements OnInit {
       participants: ['']
     });
 
+    if (this.data?.selectInfo) {
+      this.eventForm.patchValue({
+        start: this.data?.selectInfo?.startStr
+      });
+    }
+
+    if (this.data?.eventObj) {
+      const eObj = this.data.eventObj;
+      this.isUpdate = true;
+      this.eventForm.patchValue({
+        title: eObj?.title,
+        start: eObj?.start,
+        end: eObj?.end,
+        description: eObj?.description,
+        participants: eObj?.participants
+      });
+    }
   }
 
   closeDialog(res?: any): void {
@@ -67,19 +87,28 @@ export class CreateEventComponent implements OnInit {
         participants: this.f.participants.value
       };
 
-      this.eventPostSubscrption = this.schedulingService.postEvents(eventObj).subscribe({
-        next: (response: any) => {
-          this.submitted = false;
-          this.isSubmitting = false;
-          this.snackBarService.openSnackBar({ type: 'success', message: 'You have successfully created event.' });
-          this.closeDialog(response.data);
-        }, error: (error) => {
-          this.submitted = false;
-          this.isSubmitting = false;
-          const message = error && error.message ? error.message : 'Unable to create event at this moment.';
-          this.snackBarService.openSnackBar({ type: 'danger', message });
-        }
-      });
+      let url: any;
+      if (this.isUpdate) {
+        url = this.schedulingService.patchEvents(eventObj, this.data.eventObj?.id);
+      } else {
+        url = this.schedulingService.postEvents(eventObj);
+      }
+
+      if (url) {
+        this.eventPostSubscrption = url.subscribe({
+          next: (response: any) => {
+            this.submitted = false;
+            this.isSubmitting = false;
+            this.snackBarService.openSnackBar({ type: 'success', message: `You have successfully ${this.isUpdate ? 'updated' : 'created'} event.` });
+            this.closeDialog(response.data);
+          }, error: (error: any) => {
+            this.submitted = false;
+            this.isSubmitting = false;
+            const message = error && error.message ? error.message : `Unable to ${this.isUpdate ? 'update' : 'created'} event at this moment.`;
+            this.snackBarService.openSnackBar({ type: 'danger', message });
+          }
+        });
+      }
     }
   }
 

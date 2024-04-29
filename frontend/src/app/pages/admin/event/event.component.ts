@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectorRef, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import timezones from 'timezones-list';
@@ -8,16 +8,15 @@ import { Country } from 'src/app/core/model/Country';
 import { Timezone } from 'src/app/core/model/Timezone';
 import { MatDialog } from '@angular/material/dialog';
 
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput } from '@fullcalendar/core';
+import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateEventComponent } from '../shared/create-event/create-event.component';
 import { DeleteEventComponent } from '../shared/delete-event/delete-event.component';
 import { Event } from 'src/app/core/model/Event';
-import { map } from 'lodash';
+import { find, map } from 'lodash';
 
 @Component({
   selector: 'app-event',
@@ -152,13 +151,13 @@ export class EventComponent implements OnInit, OnDestroy {
     this.calendarOptions.events = [];
     if (this.eventsData && this.eventsData.length > 0) {
       map(this.eventsData, (ed: any) => {
-        this.calendarOptions?.events.push({ id: ed._id, start: ed.start, end: ed.end, title: ed.title });
+        this.calendarOptions?.events.push({ id: ed._id, start: ed.start, end: ed.end, title: ed.title, description: ed.description, participants: ed.participants });
       });
     }
 
     if (this.holidaysData && this.holidaysData.length > 0) {
       map(this.holidaysData, (holiday: any) => {
-        this.calendarOptions?.events.push({ id: holiday.uuid, start: holiday.date, end: holiday.date, title: holiday.name });
+        this.calendarOptions?.events.push({ id: holiday.uuid, start: holiday.date, end: holiday.date, title: holiday.name, description: '', participants: '' });
       });
     }
   }
@@ -189,9 +188,8 @@ export class EventComponent implements OnInit, OnDestroy {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    console.log('selectInfo', selectInfo);
     const creRef = this.dialog.open(CreateEventComponent, {
-      width: '46%',
+      width: '42%',
       autoFocus: false,
       disableClose: true,
       panelClass: 'event-dialog',
@@ -199,6 +197,7 @@ export class EventComponent implements OnInit, OnDestroy {
     });
 
     creRef.afterClosed().subscribe((result: any) => {
+      console.log(result);
       if (result) {
         const calendarApi = selectInfo.view.calendar;
         calendarApi.unselect(); // clear date selection
@@ -208,18 +207,21 @@ export class EventComponent implements OnInit, OnDestroy {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-    console.log(clickInfo.event.title);
     console.log(clickInfo.event.id);
+    const id = clickInfo.event.id;
+    const eventObj = find(this.calendarOptions.events, ['id', id]);
+    console.log('eventObj', eventObj);
+
     const delRef = this.dialog.open(DeleteEventComponent, {
-      width: '46%',
+      width: '42%',
       autoFocus: false,
       disableClose: true,
       panelClass: 'event-dialog',
-      data: { clickInfo, id: clickInfo.event.id }
+      data: { clickInfo, id, eventObj }
     });
 
     delRef.afterClosed().subscribe((result: any) => {
-      if (result) { clickInfo.event.remove(); }
+      if (result) { this.calendarVisible = false; this.fetchEvents(); clickInfo.event.remove(); }
     });
   }
 

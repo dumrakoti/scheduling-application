@@ -14,6 +14,8 @@ router.get('/logout', CheckAuth, UsersController.users_logout);
 
 router.get("/:userId", CheckAuth, UsersController.user_get);
 
+router.patch("/:userId", CheckAuth, UsersController.user_patch);
+
 router.delete("/:userId", CheckAuth, UsersController.users_delete);
 
 module.exports = router;
