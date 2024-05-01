@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyPaser = require('body-parser');
 const mongoose = require('mongoose');
 var createError = require('http-errors');
+var cors = require('cors')
 // var cookieParser = require('cookie-parser');
 const config = require('./config');
 
@@ -20,8 +21,15 @@ app.set('view engine', 'pug');
 
 mongoose.connect(
   `${config.databaseUrl}/${config.databaseName}`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+  {
+    useNewUrlParser: true, useUnifiedTopology: true, connectTimeoutMS: 30000,
+    bufferCommands: false
+  }
+).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.error('MongoDB connection error:', error);
+});
 mongoose.Promise = global.Promise;
 mongoose.connection.once('open', _ => { console.log('Database connected') });
 mongoose.connection.on('error', err => { console.error('connection error:', err) });
@@ -34,6 +42,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(bodyPaser.urlencoded({ extended: false }));
 // app.use(bodyPaser.json());
 
+app.use(cors({
+  origin: config.frontendUrl,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -42,11 +56,12 @@ app.use((req, res, next) => {
   );
   res.header('Access-Control-Allow-Credentials', true);
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'PUT, PATCH, GET, PATCH, POST, DELETE');
+    res.header('Access-Control-Allow-Methods', 'PUT, PATCH, GET, POST, DELETE');
     return res.status(200).json({});
   }
   next();
 });
+
 
 app.use('/', indexRoutes);
 app.use('/auth', userRoutes);
