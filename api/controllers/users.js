@@ -9,7 +9,7 @@ const tokenList = {}
 exports.users_register = (req, res, next) => {
   const rb = req && req.body;
   if (rb.email && rb.name && rb.password) {
-    User.find({ email: rb.email })
+    User.findOne({ email: rb.email })
       .exec()
       .then(user => {
         if (user.length >= 1) {
@@ -63,7 +63,7 @@ exports.users_register = (req, res, next) => {
 exports.users_login = (req, res, next) => {
   const rb = req && req.body;
   if (rb.email && rb.password) {
-    User.find({ email: rb.email })
+    User.findOne({ email: rb.email })
       .exec()
       .then(user => {
         if (user.length < 1) {
