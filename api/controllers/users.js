@@ -6,10 +6,10 @@ const config = require('./../config');
 const User = require('./../models/user');
 const tokenList = {}
 
-exports.users_register = (req, res, next) => {
+exports.users_register = async (req, res, next) => {
   const rb = req && req.body;
   if (rb.email && rb.name && rb.password) {
-    User.findOne({ email: rb.email })
+    await User.findOne({ email: rb.email })
       .exec()
       .then(user => {
         if (user.length >= 1) {

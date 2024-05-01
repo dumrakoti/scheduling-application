@@ -5,8 +5,14 @@ const bodyPaser = require('body-parser');
 const mongoose = require('mongoose');
 var createError = require('http-errors');
 var cors = require('cors')
-// var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser');
 const config = require('./config');
+const session = require("express-session");
+const passport = require("passport");
+const flash = require("connect-flash");
+
+var MongoStore = require("connect-mongo")(session);
+const connectDB = require('./config/db');
 
 const indexRoutes = require('./routes/index');
 const userRoutes = require('./routes/users');
@@ -15,32 +21,59 @@ const eventRoutes = require('./routes/event');
 
 const app = express();
 
+connectDB();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-mongoose.connect(
-  `${config.databaseUrl}/${config.databaseName}`,
-  {
-    useNewUrlParser: true, useUnifiedTopology: true, connectTimeoutMS: 30000,
-    bufferCommands: false
-  }
-).then(() => {
-  console.log('Connected to MongoDB');
-}).catch((error) => {
-  console.error('MongoDB connection error:', error);
-});
-mongoose.Promise = global.Promise;
-mongoose.connection.once('open', _ => { console.log('Database connected') });
-mongoose.connection.on('error', err => { console.error('connection error:', err) });
+// mongoose.connect(
+//   `${config.databaseUrl}/${config.databaseName}`,
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     bufferCommands: false
+//   }
+// ).then(() => {
+//   console.log('Connected to MongoDB');
+// }).catch((error) => {
+//   console.error('MongoDB connection error:', error);
+// });
+// mongoose.Promise = global.Promise;
+// mongoose.connection.once('open', _ => { console.log('Database connected') });
+// mongoose.connection.on('error', err => { console.error('connection error:', err) });
+
+// try {
+//   mongoose.connect(`${config.databaseUrl}/${config.databaseName}`, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   });
+//   console.log('Connected to MongoDB');
+// } catch (error) {
+//   console.error('MongoDB connection error:', error);
+// }
 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // app.use(bodyPaser.urlencoded({ extended: false }));
 // app.use(bodyPaser.json());
+app.use(
+  session({
+    secret: config.secret || process.env.secret,
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+    }),
+    cookie: { maxAge: 60 * 1000 * 60 * 3 },
+  })
+);
+
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(cors({
   origin: config.frontendUrl,
@@ -48,19 +81,19 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  res.header('Access-Control-Allow-Credentials', true);
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'PUT, PATCH, GET, POST, DELETE');
-    return res.status(200).json({});
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', config.frontendUrl);
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+//   );
+//   res.header('Access-Control-Allow-Credentials', true);
+//   if (req.method === 'OPTIONS') {
+//     res.header('Access-Control-Allow-Methods', 'PUT, PATCH, GET, POST, DELETE');
+//     return res.status(200).json({});
+//   }
+//   next();
+// });
 
 
 app.use('/', indexRoutes);
