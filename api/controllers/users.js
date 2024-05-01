@@ -7,40 +7,25 @@ const User = require('./../models/user');
 const tokenList = {}
 
 exports.users_register = async (req, res, next) => {
-  const rb = req && req.body;
-  if (rb.email && rb.name && rb.password) {
-    await User.findOne({ email: rb.email })
-      .exec()
-      .then(user => {
-        if (user.length >= 1) {
-          return res.status(422).json({ status: 422, error: 'Email already exists' });
-        } else {
-          bcrypt.hash(rb.password, 10, (error, hash) => {
-            if (error) {
-              return res.status(500).json({ status: 500, error: error });
-            } else {
-              const user = new User({
-                _id: new mongoose.Types.ObjectId(),
-                email: rb.email,
-                name: rb.name,
-                password: hash,
-                created_at: new Date()
-              });
-              user.save()
-                .then(result => {
-                  res.status(201).json({
-                    status: 201,
-                    message: 'User register successfully.',
-                    data: { email: result.email, name: result.name, _id: result._id }
-                  });
-                })
-                .catch(error => {
-                  res.status(500).json({ status: 500, error: error || 'Cannot register at this time.' });
-                });
-            }
-          })
-        }
-      });
+  const user = await User.findOne({ email: req.body.email });
+  if (user) {
+    return res.status(400).send('User with given email already exists');
+  }
+
+  if (!user) {
+    let user = new User({
+      _id: new mongoose.Types.ObjectId(),
+      name: req.body.name,
+      email: req.body.email,
+      password: bcrypt.hashSync(req.body.password, 10),
+      created_at: new Date()
+    });
+
+    user = await user.save();
+
+    if (!user)
+      return res.status(404).send('User cannot be created')
+    res.send(user);
   } else {
     let error = {};
     let errors = [];
@@ -58,6 +43,59 @@ exports.users_register = async (req, res, next) => {
     }
     return res.status(422).json({ status: 422, error, errors });
   }
+
+
+  // const rb = req && req.body;
+  // if (rb.email && rb.name && rb.password) {
+  //   await User.find({ email: rb.email })
+  //     .exec()
+  //     .then(user => {
+  //       if (user.length >= 1) {
+  //         return res.status(422).json({ status: 422, error: 'Email already exists' });
+  //       } else {
+  //         bcrypt.hash(rb.password, 10, (error, hash) => {
+  //           if (error) {
+  //             return res.status(500).json({ status: 500, error: error });
+  //           } else {
+  //             const user = new User({
+  //               _id: new mongoose.Types.ObjectId(),
+  //               email: rb.email,
+  //               name: rb.name,
+  //               password: hash,
+  //               created_at: new Date()
+  //             });
+  //             user.save()
+  //               .then(result => {
+  //                 res.status(201).json({
+  //                   status: 201,
+  //                   message: 'User register successfully.',
+  //                   data: { email: result.email, name: result.name, _id: result._id }
+  //                 });
+  //               })
+  //               .catch(error => {
+  //                 res.status(500).json({ status: 500, error: error || 'Cannot register at this time.' });
+  //               });
+  //           }
+  //         })
+  //       }
+  //     });
+  // } else {
+  //   let error = {};
+  //   let errors = [];
+  //   if (rb.name === '') {
+  //     errors.push('Full name required.');
+  //     error.name = 'Full name required.';
+  //   }
+  //   if (rb.email === '') {
+  //     errors.push('Email required.');
+  //     error.email = 'Email required.';
+  //   }
+  //   if (rb.password === '') {
+  //     error.password = 'Password required.';
+  //     errors.push('Password required.');
+  //   }
+  //   return res.status(422).json({ status: 422, error, errors });
+  // }
 }
 
 exports.users_login = (req, res, next) => {

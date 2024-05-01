@@ -11,7 +11,7 @@ const session = require("express-session");
 const passport = require("passport");
 const flash = require("connect-flash");
 
-var MongoStore = require("connect-mongo")(session);
+// var MongoStore = require("connect-mongo")(session);
 const connectDB = require('./config/db');
 
 const indexRoutes = require('./routes/index');
@@ -64,9 +64,9 @@ app.use(
     secret: config.secret || process.env.secret,
     resave: false,
     saveUninitialized: false,
-    store: new MongoStore({
-      mongooseConnection: mongoose.connection,
-    }),
+    // store: new MongoStore({
+    //   mongooseConnection: mongoose.connection,
+    // }),
     cookie: { maxAge: 60 * 1000 * 60 * 3 },
   })
 );
