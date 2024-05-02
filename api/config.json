@@ -1,6 +1,6 @@
 {
-  "databaseUrl": "mongodb://127.0.0.1:27017",
-  "databaseName": "schedule",
+  "databaseUrl": "mongodb+srv://doadmin:W7Mrn859zFYN3064@api-8d0f61a0.mongo.ondigitalocean.com",
+  "databaseName": "admin",
   "secret": "schedule-api-token-key",
   "refreshTokenSecret": "2024_schedule_api_refresh_token_key",
   "tokenType": "Bearer",

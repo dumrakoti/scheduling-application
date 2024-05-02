@@ -11,7 +11,6 @@ const session = require("express-session");
 const passport = require("passport");
 const flash = require("connect-flash");
 
-// var MongoStore = require("connect-mongo")(session);
 const connectDB = require('./config/db');
 
 const indexRoutes = require('./routes/index');
@@ -26,47 +25,17 @@ connectDB();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// mongoose.connect(
-//   `${config.databaseUrl}/${config.databaseName}`,
-//   {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     bufferCommands: false
-//   }
-// ).then(() => {
-//   console.log('Connected to MongoDB');
-// }).catch((error) => {
-//   console.error('MongoDB connection error:', error);
-// });
-// mongoose.Promise = global.Promise;
-// mongoose.connection.once('open', _ => { console.log('Database connected') });
-// mongoose.connection.on('error', err => { console.error('connection error:', err) });
-
-// try {
-//   mongoose.connect(`${config.databaseUrl}/${config.databaseName}`, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-//   });
-//   console.log('Connected to MongoDB');
-// } catch (error) {
-//   console.error('MongoDB connection error:', error);
-// }
-
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(bodyPaser.urlencoded({ extended: false }));
-// app.use(bodyPaser.json());
+
 app.use(
   session({
     secret: config.secret || process.env.secret,
     resave: false,
     saveUninitialized: false,
-    // store: new MongoStore({
-    //   mongooseConnection: mongoose.connection,
-    // }),
     cookie: { maxAge: 60 * 1000 * 60 * 3 },
   })
 );
@@ -76,25 +45,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
+  // origin: '*',
   origin: config.frontendUrl,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', config.frontendUrl);
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-//   );
-//   res.header('Access-Control-Allow-Credentials', true);
-//   if (req.method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', 'PUT, PATCH, GET, POST, DELETE');
-//     return res.status(200).json({});
-//   }
-//   next();
-// });
-
 
 app.use('/', indexRoutes);
 app.use('/auth', userRoutes);

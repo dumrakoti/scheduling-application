@@ -169,6 +169,7 @@ export class EventComponent implements OnInit, OnDestroy {
       this.calendarOptions.timeZone = el;
       this.changeDetector.detectChanges();
       this.calendarVisible = true;
+      this.fetchEvents();
     }, 1000);
   }
 
@@ -202,6 +203,7 @@ export class EventComponent implements OnInit, OnDestroy {
         const calendarApi = selectInfo.view.calendar;
         calendarApi.unselect(); // clear date selection
         calendarApi.addEvent(result);
+        this.fetchEvents();
       }
     });
   }
