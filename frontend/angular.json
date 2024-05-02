@@ -40,12 +40,15 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets//bootstrap.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss",
               "@ng-select/ng-select/themes/default.theme.css",
               "ng-pick-datetime/assets/style/picker.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets//bootstrap.bundle.js"
+            ]
           },
           "configurations": {
             "production": {
